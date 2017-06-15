@@ -3,11 +3,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileSystemView;
+
 
 import com.sifrekaydedici.library.Library;
 
@@ -20,18 +30,35 @@ public class Menu extends Library implements ActionListener,MouseListener{
 	
 	public void init() {
 		panel=new JPanel();
-		buttons=new JButton[4];//ekle sil ara guncelle butonlarý
-		icon=new ImageIcon[9];//butonlar için icon
+		buttons=new JButton[5];//ekle sil ara guncelle profil resmi butonlari
+		icon=new ImageIcon[10];//butonlar için icon
 		label=new JLabel[1];
 		imageIconInit(icon,0,"EkleButon.png");
 		imageIconInit(icon,1,"SilButon.png");
 		imageIconInit(icon,2,"AraButon.png");
 		imageIconInit(icon,3,"GuncelleButon.png");
-		imageIconInit(icon,4,"Menu.png");
+		imageIconInit(icon,4,"menu_new.png");
 		imageIconInit(icon,5,"EkleButonAnim.png");
 		imageIconInit(icon,6,"SilButonAnim.png");
 		imageIconInit(icon,7,"AraButonAnim.png");
 		imageIconInit(icon,8,"GuncelleButonAnim.png");
+		
+		//userPref klasorunun olup olmadigina bakiliyor
+		File userPref=new File("userPref");
+		if(!(userPref.exists())) userPref.mkdir();
+		
+		java.io.File profile_image=new java.io.File("userPref/"+JDBConnection.tempID+".png");
+		System.out.println(profile_image.exists());
+		if(profile_image.exists()){ 
+			try{
+				icon[9]=new javax.swing.ImageIcon("userPref/"+JDBConnection.tempID+".png");
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+		} 
+		else imageIconInit(icon,9,"profile_image.png");
+		
+		
 		menuInfo=0;//þuan menüde baþladý
 	}
 	public Menu(){
@@ -44,6 +71,7 @@ public class Menu extends Library implements ActionListener,MouseListener{
 		imageButtonEkle(panel,buttons,2,icon,2,this,461,144,191,115);//ara
 		imageButtonEkle(panel,buttons,3,icon,3,this,550,254,154,133);//güncelle
 		imageLabelEkle(panel,label,0,icon,4,279,16,205,471);// menu
+		addResizeImgButton(panel,buttons,4,icon,9,this,297,16,168,170);
 		buttons[0].addMouseListener(this);
 		buttons[1].addMouseListener(this);
 		buttons[2].addMouseListener(this);
@@ -94,11 +122,32 @@ public class Menu extends Library implements ActionListener,MouseListener{
 			
 			AnaPanel.tableLabel[0].setVisible(true);
 			AnaPanel.tableLabel[0].setLocation(25,108);
-			AnaPanel.tableLabel[0].setSize(new Dimension(715,368));
-			AnaPanel.table.setSize(new Dimension(700,365));
+			AnaPanel.tableLabel[0].setSize(new Dimension(715,350));
 		}
-
 		
+		if(e.getSource().equals(buttons[4])){//Profil Resmi butonu
+			JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("PNG Images","png");
+			jfc.setFileFilter(filter);
+			int returnValue = jfc.showOpenDialog(null);
+			if (returnValue == JFileChooser.APPROVE_OPTION) {
+				File selectedFile = jfc.getSelectedFile();
+				File nFile=new File("userPref/"+JDBConnection.tempID+".png");
+				try (InputStream is = new FileInputStream(selectedFile)) {
+				      Files.copy(is, nFile.toPath());
+				      panel.remove(buttons[4]);
+				      try{
+						icon[9]=new javax.swing.ImageIcon("userPref/"+JDBConnection.tempID+".png");
+				      }catch(Exception ex){
+						ex.printStackTrace();
+					  }
+				      addResizeImgButton(panel,buttons,4,icon,9,this,297,16,168,170);//
+				      panel.repaint();
+				}catch (IOException ex) {
+				      System.err.println(ex);
+				}
+			}
+		}
 	}
 	@Override
 	public void mouseClicked(MouseEvent e) {

@@ -8,6 +8,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -16,9 +17,10 @@ import com.sifrekaydedici.library.Library;
 public class Frame extends Library implements ActionListener,MouseListener{
 	
 	JFrame frame;
-	JPanel panel;
+	static JPanel panel;
+	static JLayeredPane lp;
 	AnaPanel anaPanel;
-	Menu menuPanel;
+	//Menu menuPanel;
 	Login loginPanel;
 	JButton[] buttons;//buttonlarýn tutulduðu array
 	ImageIcon[] icon;// resimlerin tutulduðu array
@@ -29,12 +31,15 @@ public class Frame extends Library implements ActionListener,MouseListener{
 		new Frame();
 	}
 	public void init(){
-		frame=new JFrame();
+		
+		lp=new JLayeredPane();
 		panel=new JPanel();
 		panel.setLayout(null);
-		anaPanel=new AnaPanel();
-		menuPanel=new Menu();
 		loginPanel=new Login();
+		anaPanel=new AnaPanel();
+		frame=new JFrame();
+		//menuPanel=new Menu();
+		
 		buttons=new JButton[3];//system buttons exit minimize buttonlar için ve information
 		icon=new ImageIcon[9]; //5 tane icon system butonlarý için
 		imageIconInit(icon,0,"Exit.png");
@@ -51,16 +56,19 @@ public class Frame extends Library implements ActionListener,MouseListener{
 	public Frame(){
 		init();
 		undecoratedFrame(frame,840,632);
-		frame.add(panel,null);
+		frame.add(lp,null);
 		frame.setIconImage(icon[8].getImage());
+		lp.add(panel,new Integer(1));
+		lp.add(Login.panel,new Integer(2));
+		lp.add(AnaPanel.panel,new Integer(4));
 		panel.setBounds(0,0,840,632);
-		panel.add(AnaPanel.panel);
-		panel.add(Menu.panel);
-		panel.add(Login.panel);
+		//panel.add(AnaPanel.panel);
+		//panel.add(Menu.panel);
+		//panel.add(Login.panel);
 		AnaPanel.panel.setLocation(44,96);
-		Menu.panel.setLocation(44,96);
+		//Menu.panel.setLocation(44,96);
 		Login.panel.setLocation(44,96);
-		Menu.panel.setVisible(false);
+		//Menu.panel.setVisible(false);
 		
 		setFrameMotion(frame,true);//frame drag sistemi
 		imageButtonEkle(panel,buttons,2,icon,6,this,775,40,51,49);//information button
@@ -87,7 +95,7 @@ public class Frame extends Library implements ActionListener,MouseListener{
 			frame.setState(JFrame.ICONIFIED);
 		}
 		if(e.getSource().equals(buttons[2])){
-			JOptionPane.showMessageDialog(null,"11/10/16\nOktay Koçer tarafýndan yapýlmýþtýr.\nProgram tüm hesaplarýnýzý bilgisayarýnýzýn\nhafýzasýnda güvenli bir þekilde saklar.\nHerhangi net baðlantýsý yoktur.","Program Hakkýnda",JOptionPane.INFORMATION_MESSAGE,icon[7]);
+			JOptionPane.showMessageDialog(null,"11/10/16\nOktay Koçer tarafýndan yapýlmýþtýr.\nProgram tüm hesaplarýnýzý bilgisayarýnýzýn\nhafýzasýnda güvenli bir þekilde saklar.\nHerhangi net baðlantýsý yoktur.\nGITHUB:http://github.com/oktaykcr","Program Hakkýnda",JOptionPane.INFORMATION_MESSAGE,icon[7]);
 		}
 		
 	}

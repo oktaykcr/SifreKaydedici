@@ -14,7 +14,7 @@ public class JDBConnection {//Frame class main kýsmýnda baðlantý baþlatýlýyor
 	static String tempPass=null;
 	static String tempTable=null;
 	public JDBConnection(){
-		getConnection();	
+		getConnection();
 	}
 	public static Connection getConnection(){//Database ilk baðlantýyý almak için
 		Connection con = null;
@@ -47,6 +47,9 @@ public class JDBConnection {//Frame class main kýsmýnda baðlantý baþlatýlýyor
 						myRs.getString("sifre_pw"),myRs.getString("sifre_email"),myRs.getString("sifre_dis"));
 				sifreler.add(yeniSifre);
 			}
+			myRs.close();
+			st.close();
+			conn.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

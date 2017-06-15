@@ -1,8 +1,11 @@
 package com.sifrekaydedici.library;
 
+import java.awt.Font;
 import java.awt.TextArea;
 
 public class Library {
+	public Font font=new Font("Tahoma",Font.BOLD,12);
+	
 	
 	public void frameAc(javax.swing.JFrame frame,String name,int width,int height,boolean visibility){
 		//sadece JFrame açma
@@ -99,6 +102,31 @@ public class Library {
 			}
 		}
 	public void setFrameMotion(javax.swing.JFrame window,boolean drag){
+		// undecorated JFrame hareket ettirme
+		if(drag==true){
+			java.awt.event.MouseAdapter ma=new java.awt.event.MouseAdapter(){
+				int lastX, lastY;
+		        @Override
+		        public void mousePressed(java.awt.event.MouseEvent e) {
+		            lastX = e.getXOnScreen();
+		            lastY = e.getYOnScreen();
+		        }
+		        @Override
+		        public void mouseDragged(java.awt.event.MouseEvent e) {
+		            int x = e.getXOnScreen();
+		            int y = e.getYOnScreen();
+		            // Move frame by the mouse delta
+		            window.setLocation(window.getLocationOnScreen().x + x - lastX,
+		                    window.getLocationOnScreen().y + y - lastY);
+		            lastX = x;
+		            lastY = y;
+		        }
+		    };
+		    window.addMouseListener(ma);
+		    window.addMouseMotionListener(ma);
+			}
+		}
+	public void setFrameMotion(javax.swing.JDialog window,boolean drag){
 		// undecorated JFrame hareket ettirme
 		if(drag==true){
 			java.awt.event.MouseAdapter ma=new java.awt.event.MouseAdapter(){
@@ -241,6 +269,18 @@ public class Library {
 		button[index].setOpaque(false);
 		panel.revalidate();
 	}
+	public void  addResizeImgButton(javax.swing.JPanel panel,javax.swing.JButton[] button,int buttonIndex,javax.swing.ImageIcon[] icon,int iconIndex,java.awt.event.ActionListener al,int x,int y,int width,int height ){
+		java.awt.Image img=icon[iconIndex].getImage().getScaledInstance(width,height,java.awt.Image.SCALE_SMOOTH); 
+		icon[iconIndex]=new javax.swing.ImageIcon(img);
+		button[buttonIndex]=new javax.swing.JButton(icon[iconIndex]);
+		button[buttonIndex].setBounds(x, y, width, height);
+		button[buttonIndex].addActionListener(al);
+		button[buttonIndex].setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		button[buttonIndex].setContentAreaFilled(false);
+		button[buttonIndex].setOpaque(false);
+		panel.add(button[buttonIndex]);
+		panel.revalidate();
+	}
 	public void  imageButtonEkle(javax.swing.JLayeredPane lPane,javax.swing.JButton[] button,int index,javax.swing.ImageIcon[] icon,int iconIndex,java.awt.event.ActionListener al,int x,int y,int width,int height ){
 		// JLAYEREDPANE ICIN --array butona array icon ekleme text siz (buton özelliði yok tamamen resim hali ve actionListener da çalýþýyor)
 		button[index]=new javax.swing.JButton(icon[iconIndex]);
@@ -252,6 +292,7 @@ public class Library {
 		button[index].setOpaque(false);
 		lPane.revalidate();
 	}
+	
 	/*	ekraný fullscreen yapma
 	 * 
 	 * if(fullscreen==false){
